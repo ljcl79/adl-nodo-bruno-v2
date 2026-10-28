@@ -3,8 +3,16 @@ variables:
   - name: baseURL
     value: https://restful-booker.herokuapp.com
   - name: token
-    value: 9c19e3b53f2b6c7
+    value: c4a3bf85cbd5587
   - name: bookingid
     value:
       type: number
-      data: "1811"
+      data: "3905"
+  - name: firstName
+    value: Leonardo
+  - name: lastName
+    value: Castillo
+  - name: totalPrice
+    value: Mil
+  - name: depositPaid
+    value: "true"

@@ -13,10 +13,10 @@ http:
     type: json
     data: |-
       {
-        "firstname": "Jim",
-        "lastname": "Brown",
-        "totalprice": 111,
-        "depositpaid": true,
+        "firstname": "{{firstName}}",
+        "lastname": "{{lastName}}",
+        "totalprice": {{totalPrice}},
+        "depositpaid": {{depositPaid}},
         "bookingdates": {
           "checkin": "2018-01-01",
           "checkout": "2019-01-01"
@@ -27,6 +27,20 @@ http:
 
 runtime:
   scripts:
+    - type: before-request
+      code: |-
+        const columnas = ['firstname','lastname','totalprice','depositpaid'];
+        const variables = ['firstName','lastName','totalPrice','depositPaid'];
+
+        for(i = 0;i < columnas.length;i++) {
+          bru.setEnvVar(variables[i], bru.runner.iterationData.get(columnas[i])); 
+        }
+
+        /*
+        bru.setEnvVar("lastName", bru.runner.iterationData.get("lastname"));
+        bru.setEnvVar("totalPrice", bru.runner.iterationData.get("totalprice"));
+        bru.setEnvVar("depositPaid", bru.runner.iterationData.get("depositpaid")
+        */
     - type: after-response
       code: |-
         if (res.status === 200 && res.body?.bookingid) {
@@ -35,9 +49,14 @@ runtime:
     - type: tests
       code: |-
         test("Validar reserva", () => {
-          expect(res.getStatus()).to.equal(201);
-          expect(res.getBody()).to.have.property("booking");
-          expect(res.body.booking).to.be.an("object");
+          if (!req.body.totalprice) {
+            expect(res.getStatus()).to.equal(400);
+          }
+          else {
+            expect(res.getStatus()).to.equal(201);
+            expect(res.getBody()).to.have.property("booking");
+            expect(res.body.booking).to.be.an("object");
+          }
         });
 
 settings:

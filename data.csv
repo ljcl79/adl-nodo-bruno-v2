@@ -1,0 +1,5 @@
+firstname,lastname,totalprice,depositpaid,checkin,checkout,additionalneeds
+Carlos,Fernandez,180,true,2026-09-01,2026-09-05,Breakfast
+Maria,Gonzalez,320,false,2026-09-10,2026-09-15,Lunch
+Jorge,Ramirez,95,true,2026-10-01,2026-10-02,
+Leonardo,Castillo,Mil,true,2026-10-01,2026-10-02,

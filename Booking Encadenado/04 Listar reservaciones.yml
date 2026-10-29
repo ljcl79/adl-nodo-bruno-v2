@@ -1,0 +1,32 @@
+info:
+  name: 04 Listar reservaciones
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: "{{baseURL}}/booking"
+  headers:
+    - name: Accept
+      value: application/json
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Status 200", function () {
+          expect(res.status).to.equal(200)
+        })
+
+        test("La lista incluye la reservación creada", function () {
+          const ids = res.body.map(b => b.bookingid)
+          expect(ids).to.include(bru.getVar("bookingId"))
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

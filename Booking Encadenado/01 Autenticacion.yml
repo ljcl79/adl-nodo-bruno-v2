@@ -1,0 +1,46 @@
+info:
+  name: 01 Autenticacion
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseURL}}/auth"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+          "username" : "admin",
+          "password" : "password123"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        if (res.status == 200 && res.body?.token) {
+            bru.setEnvVar("token", res.body.token)
+        } else {
+            // Sin token no tiene sentido seguir con el flujo
+            bru.runner.stopExecution()
+        }
+    - type: tests
+      code: |-
+        test("Status 200", function () {
+          expect(res.status).to.equal(200)
+        })
+
+        test("Devuelve token", function () {
+          expect(res.body.token).to.be.a("string")
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

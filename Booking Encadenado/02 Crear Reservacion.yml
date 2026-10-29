@@ -1,0 +1,60 @@
+info:
+  name: 02 Crear Reservacion
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseURL}}/booking"
+  headers:
+    - name: Content-Type
+      value: application/json
+    - name: Accept
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "firstname": "Jim",
+        "lastname": "Brown",
+        "totalprice": 111,
+        "depositpaid": true,
+        "bookingdates": {
+          "checkin": "2018-01-01",
+          "checkout": "2019-01-01"
+        },
+        "additionalneeds": "Breakfast"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        if (res.status == 200 && res.body?.bookingid) {
+            bru.setVar("bookingId", res.body.bookingid)
+        } else {
+            // Sin reservación no se puede consultar, actualizar ni borrar
+            bru.runner.stopExecution()
+        }
+    - type: tests
+      code: |-
+        test("Status 200", function () {
+          expect(res.status).to.equal(200)
+        })
+
+        test("Devuelve bookingid", function () {
+          expect(res.body.bookingid).to.be.a("number")
+        })
+
+        test("Los datos coinciden con lo enviado", function () {
+          expect(res.body.booking.firstname).to.equal("Jim")
+          expect(res.body.booking.lastname).to.equal("Brown")
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

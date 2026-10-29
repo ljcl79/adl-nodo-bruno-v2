@@ -1,0 +1,43 @@
+info:
+  name: 05 Actualizar reservacion
+  type: http
+  seq: 5
+
+http:
+  method: PATCH
+  url: "{{baseURL}}/booking/{{bookingId}}"
+  headers:
+    - name: Content-Type
+      value: application/json
+    - name: Accept
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "additionalneeds": "Breakfast, Lunch and Dinner"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Status 200", function () {
+          expect(res.status).to.equal(200)
+        })
+
+        test("Se actualizó additionalneeds", function () {
+          expect(res.body.additionalneeds).to.equal("Breakfast, Lunch and Dinner")
+        })
+
+        test("El resto de los datos no cambió", function () {
+          expect(res.body.firstname).to.equal("Jim")
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

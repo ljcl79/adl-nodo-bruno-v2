@@ -1,0 +1,10 @@
+info:
+  name: Booking Encadenado
+  type: folder
+  seq: 2
+
+request:
+  headers:
+    - name: Cookie
+      value: token={{token}}
+  auth: inherit
